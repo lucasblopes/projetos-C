@@ -1,0 +1,41 @@
+Escreva um programa em C em conformidade com os requisitos abaixo que
+resolve o problema da compra de passagens de ônibus em uma companhia.
+
+1. O programa deve ter pelo menos duas funções adicionais à principal,
+com os seguintes protótipos: 
+    a.int verificarAssento(char
+    onibus[FILEIRA][POLTRONA], int assento);
+    b.int reservarAssento(char
+    onibus[FILEIRA][POLTRONA], int assento);
+
+2. A função do item 1a recebe a matriz que representa o ônibus e um
+número de assento do usuário, então verifica se tal assento está
+ocupado. Caso o assento já esteja reservado, a função retorna 0 (zero,
+indicando FALSO ou “assento indisponível''). Caso o assento esteja
+livre, seu número é retornado para o usuário. Por exemplo, supondo
+que o ônibus esteja vazio e o usuário queira reservar a poltrona 5, a
+função irá retornar 5, indicando assim que tal assento está livre para
+ser comprado.
+
+3. A função do item 1b deve ser chamada somente se um dado assento
+estiver livre para ser reservado. O assento livre, retornado pela função
+1a, deve ser passado como argumento de entrada da função 1b, assim
+como a matriz que representa o ônibus (mais detalhes no próximo
+item). Deve-se colocar a letra ‘x’ na posição da matriz onibus que
+representa o assento a ser reservado, indicando assim que a reserva
+foi feita com sucesso. A função retorna 0 (zero) se o assento não foi
+reservado e 1 (um) caso a reserva tenha sido feita com sucesso.
+
+4. A matriz onibus[][]: A representação do ônibus é uma matriz de 50
+posições, considerando-se 12 fileiras de 4 poltronas cada para os
+passageiros e 2 posições não-reserváveis: a posição 0 (zero), que será
+considerada como o banco do motorista, e a posição 49, que será
+considerada o banheiro do ônibus. Lembrem-se que a indexação em
+C inicia-se em zero.
+
+5. A função “main” deve prover um menu ao usuário que permita
+selecionar uma dentre três opções:
+    a. Verificar se um dado assento está ocupado ou livre;
+    b. Reservar um assento livre;
+    c. Imprimir o mapa de assentos, mostrando os assentos ocupados.
+    Crie uma função de impressão formatada da matriz ônibus.
