@@ -3,7 +3,7 @@ int num;
 
 //contdown utilizando recursao
 int countdown(int num){
-    if (num == 1) printf("%d\n", num);
+    if (num == 1) printf("%d\n", num); //caso base
     else {
         printf("%d\n", num);
         countdown(num-1);

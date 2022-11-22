@@ -15,6 +15,6 @@ int main(){
     scanf("%d", &a);
     printf("b = ");
     scanf("%d", &b);
-    printf("a ^ b = ");
+    printf("%d ^ %d = ", a, b);
     printf("%d\n", pot(a,b));
 }
