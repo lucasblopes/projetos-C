@@ -11,6 +11,7 @@ int main(){
     } while (n < 1 || n > 1024);
 
     fimVetor = vetor + n;
+    
     //entrada de dados
     printf("Digite %d numeros: \n", n);
     for(ptr = vetor; ptr < fimVetor; ptr++)

@@ -1,14 +1,14 @@
 #include<stdio.h>
                                                                                                         
 //OBS: int vetor[] eh interpretado como int *vetor
-int somaVetor(int vetor[], int n){
+int somaVetor(int v[], int n){
     int soma = 0;
     int *ptr;
-    int *fimVetor = vetor + n; //fimVetor recebe vetor(posicao 0) mais n (10) = 10
-    
-    for (ptr = vetor; ptr < fimVetor; ptr++)
-        soma += *ptr;
+    int *fimVetor = v + n;
 
+    for(ptr = v; ptr < fimVetor; ptr++)
+        soma += *ptr;
+        
     return soma;
 }
 
