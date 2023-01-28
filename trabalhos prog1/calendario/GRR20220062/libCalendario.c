@@ -208,5 +208,5 @@ void destruirAgenda(Agenda *agenda){
         free(c);
         c = p;
     }
-    printf("-agenda destruída!\n-memória liberada\n");
+    printf("\n-agenda destruída!\n-memória liberada\n");
 }
