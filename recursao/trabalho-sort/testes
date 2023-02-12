@@ -1,0 +1,20 @@
+
+Insertion Sort   10k         20k         30k       40k        50k
+reverso          0.233s      0.598s      1.090s    2.032s     3.052s
+random           0.062s      0.250s      0.555s    0.890s     1.476s
+
+Selection Sort   10k         20k         30k       40k        50k
+reverso          0.421s      1.87s       3.98s     6.935s     11.209s
+random           0.421s      1.86s       3.95s     6.877s     10.614s
+
+Merge Sort       10k         20k         30k       40k        50k
+random           0.0009s     0.0019      0.0028    0.0039s    0.00507s
+random           0.0009s     0.0031      0.0053    0.0079s    0.01032s
+
+Quick Sort       10k         20k         30k       40k        50k
+reverso          0.01828s    0.7094s     1.5697s   2.7544s    4.349s
+random           0.00118s    0.0025s     0.0039s   0.005225s  0.005s
+
+Heap Sort        10k         20k         30k       40k        50k
+reverso          0.00198s    0.00399s    0.00670   0.01135s   0.0112s
+random           0.002286s   0.00496s    0.01007   0.012994s  0.0178s
