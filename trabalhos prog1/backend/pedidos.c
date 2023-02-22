@@ -35,6 +35,7 @@ void gerarPedidos(struct Lista *lista, int clientes){
         else 
             novo->clienteID = lista->cauda->clienteID + 1;
         
+        //od ID da refeição é um número aleatório de 0 a 5, que será atrelado ao índice do vetor cardápio
         novo->refID = rand() % 6;
 
         insereCauda(lista, novo);

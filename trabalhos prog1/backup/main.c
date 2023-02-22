@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <ncurses.h>
+#include "menus.h"
 #include "game.h"
 
 //inicia o ncurses
@@ -16,17 +17,19 @@ int main(){
 
     iniciarDisplay();
 
+    imprimirLogo();
+    getch();
+
     struct Game* game = iniciarGame();
     iniciarContagem(game);
     gameLoop(game);
-    //imprimirTelaFinal(game)
-    game = liberarMemoria(game);
 
-    char cmd;
+    imprimirTelaFinal(game);
+    char cmd = 0;
     do {
-        printw("Digite 'Q' para sair\n");
         cmd = getch();
     } while (cmd != 'q' && cmd != 'Q');
+    game = liberarMemoria(game);
 
     endwin();
     return 0;

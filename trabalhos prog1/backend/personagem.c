@@ -9,15 +9,12 @@
 char novaSkin(){
 
     char skin;
-    do {
-        printw("Digite um caractere para definir a sua skin:\n");
-        skin = getch();
-        if(sizeof(skin) != 1)
-            printw("skin inválida!\n"); 
-    } while(sizeof(skin) != 1);
-    printw("%c\n", skin);
+    printf("Digite um caractere para definir a sua skin:\n");
+    skin = getch();
 
-    printw("Digite uma tecla para continuar:\n");
+    printf("%c\n", skin);
+
+    printf("Digite uma tecla para continuar\n");
     getch();
 
     return skin;
@@ -28,7 +25,7 @@ struct Personagem* novoPersonagem(struct Game* game){
      
     struct Personagem* boneco = malloc(sizeof *boneco);
         if(!boneco){
-            printw("Erro de alocação de memória em novoPersonagem()\n");
+            printf("Erro de alocação de memória em novoPersonagem()\n");
             exit(1);
         }
 
@@ -47,24 +44,15 @@ struct Personagem* novoPersonagem(struct Game* game){
 }
 
 void imprimirFase(int fase){
-    printw("[FASE %d]\n", fase);
+    printf("[FASE %d]\n", fase);
 }
 
 void imprimirVidas(int vidas){
-    printw("[Vidas: %d]\n", vidas);
+    printf("[Vidas: %d]\n", vidas);
 }
 
 void imprimirPontuacao(int pontos){
-    printw("[Pontuacao: %d]\n", pontos);
-}
-
-void animacaoInteracao(struct Game *game, size_t y, size_t x){
-
-    char tmp = game->mapa->matriz[y][x];
-    game->mapa->matriz[y][x] = '+';
-    imprimirGame(game);
-    usleep(60000);
-    game->mapa->matriz[y][x] = tmp;
+    printf("[Pontuacao: %d]\n", pontos);
 }
 
 //1 : colidiu; 0: nao colidiu
@@ -75,31 +63,24 @@ int colisao(struct Game* game, size_t x, size_t y){
     switch (proxPosicao){
         case 'R':
             push(game->boneco->receita, 'R');
-            animacaoInteracao(game, y, x);
             return 1;
         case 'F':
             push(game->boneco->receita, 'F');
-            animacaoInteracao(game, y, x);
             return 1;
         case 'p':
             push(game->boneco->receita, 'p');
-            animacaoInteracao(game, y, x);
             return 1;
         case 'H':
             push(game->boneco->receita, 'H');
-            animacaoInteracao(game, y, x);
             return 1;
         case 'Q':
             push(game->boneco->receita, 'Q');
-            animacaoInteracao(game, y, x);
             return 1;
         case 'S':
             push(game->boneco->receita, 'S');
-            animacaoInteracao(game, y, x);
             return 1;
         case 'P':
             push(game->boneco->receita, 'P');
-            animacaoInteracao(game, y, x);
             return 1;
         case 'o':
             destruirReceita(game->boneco->receita);
@@ -113,7 +94,7 @@ int colisao(struct Game* game, size_t x, size_t y){
             game->boneco->pontos += validarReceita(game->boneco->receita, game->pedidos->cabeca->refID, game->cardapio);    
             if(validarReceita(game->boneco->receita, game->pedidos->cabeca->refID, game->cardapio) > 0){
                 pop(game->pedidos);
-                game->clientes -= 1;
+                //game->clientes -= 1;
             }
             else 
                 game->boneco->vidas -= 2;
@@ -122,7 +103,7 @@ int colisao(struct Game* game, size_t x, size_t y){
             game->boneco->receita = novaReceita();
 
             //se nao tem mais pedidos vai para outra fase
-            if(!game->clientes)
+            if(!game->pedidos->cabeca)
                 proximaFase(game);
             animacaoInteracao(game, y, x);
             return 1;

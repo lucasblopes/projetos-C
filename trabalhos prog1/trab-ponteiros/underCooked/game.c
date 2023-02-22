@@ -9,29 +9,31 @@
 #include "personagem.h"
 #include "mapa.h"
 
-//númeo de pedidos por fase
+//numero de pedidos por fase
 #define CLIENTES 5
 //coordenadas de spawn do jogador
 #define Y 3
 #define X 15
 
+//contagem de 3 segundos antes de iniciar o game
 void iniciarContagem(struct Game* game){
 
     game->mapa->matriz[Y][X] = '3';
     imprimirGame(game);
-    usleep(800000);
+    sleep(1);
     game->mapa->matriz[Y][X] = '2';
     imprimirGame(game);
-    usleep(800000);
+    sleep(1);
     game->mapa->matriz[Y][X] = '1';
     imprimirGame(game);
-    usleep(800000);
+    sleep(1);
     game->mapa->matriz[Y][X] = '0';
     imprimirGame(game);
-    usleep(800000);
+    sleep(1);
     game->mapa->matriz[Y][X] = game->boneco->skin;
 }
 
+//inicializa os mesmbros da struct game
 struct Game* iniciarGame(){
 
     srand((unsigned)time(NULL)); //cria seed aleatória
@@ -50,6 +52,7 @@ struct Game* iniciarGame(){
     return game;
 }
 
+//realiza free nos mallocs 
 struct Game* liberarMemoria(struct Game* game){
 
     game->boneco = destruirPersonagem(game->boneco);
@@ -60,6 +63,7 @@ struct Game* liberarMemoria(struct Game* game){
     return NULL;
 }
 
+//imprime todas as informacoes na tela
 void imprimirGame(struct Game* game){
 
     erase();
@@ -72,7 +76,8 @@ void imprimirGame(struct Game* game){
     refresh();
 }
 
-int interpretarTecla(struct Game* game){
+//realiza uma acao de acordo com a tecla digitada
+int solicitarTecla(struct Game* game){
     
     int tecla = 0;
     tecla = getch();
@@ -110,20 +115,23 @@ int interpretarTecla(struct Game* game){
     return 0;
 }
 
+//atualiza o jogo para a proxima fase
 void proximaFase(struct Game* game){
 
     game->boneco->fase += 1;
     game->boneco->pontos += 20; //ganha 20 pontos a cada fase
-    game->clientes = CLIENTES;
+    game->clientes += 1;
     gerarPedidos(game->pedidos, game->clientes);
 }
 
+//solicita tecla e imprime as informacoes na tela enquanto estiver vivo
 void gameLoop(struct Game* game){
 
     int quit = 0;
     imprimirGame(game);
     while(!quit && game->boneco->vidas > 0){
-        quit = interpretarTecla(game);
+        quit = solicitarTecla(game);
         imprimirGame(game);
     }
+    erase();
 }

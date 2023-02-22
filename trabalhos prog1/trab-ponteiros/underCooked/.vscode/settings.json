@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "game.h": "c",
+        "pedidos.h": "c",
+        "tipos.h": "c"
+    }
+}

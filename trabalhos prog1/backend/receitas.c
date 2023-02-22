@@ -21,8 +21,7 @@ int verificarReceita(struct Receita *nova, struct Receita *pedido){
     tmp1 = nova->primeiro;
     tmp2 = pedido->primeiro;
 
-    if(!tmp1)
-        return 0;
+    if(!tmp1) return 0;
 
     while(tmp1){
         if(tmp1->id != tmp2->id)
@@ -55,22 +54,25 @@ void push(struct Receita *ref, char c){
     ref->primeiro = novo;
 }
 
+//imprime os ingredientes de tras para frente
+void imprimirIngredientes(struct Ingrediente* ingrediente){
+
+    if(!ingrediente) return;
+    imprimirIngredientes(ingrediente->prox);
+    printw("%c ", ingrediente->id);
+}
+
+//imprime a receita na tela
 void imprimirReceita(struct Receita *ref){
 
-    struct Ingrediente *tmp;
+    struct Ingrediente *tmp = ref->primeiro;
 
     printw("[Receita: ");
-    if(ref->primeiro){
-        tmp = ref->primeiro;
-        while(tmp){
-            printw("%c ", tmp->id);
-            tmp = tmp->prox;
-        }
-    }
+    imprimirIngredientes(tmp);
     printw("]\n\n");
 }
 
-//adiciona as receitas ao vetor cardapio
+//adiciona as receitas do restaurante no vetor cardapio
 struct Receita* novoCardapio(){
 
     struct Receita* cardapio = malloc(6 * sizeof *cardapio);
