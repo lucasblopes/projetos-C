@@ -84,8 +84,10 @@ int validarReceita(struct Receita* atual, int id, struct Receita* cardapio){
 
 void imprimirPedidos(struct Lista* lista){
     
-    if(!lista->cabeca)
+    if(!lista->cabeca){
+        //printw("Lista de pedidos vazia!\n");
         return;
+    } 
     
     char* pedido;
     for(struct Pedido* tmp = lista->cabeca; tmp; tmp = tmp->prox){

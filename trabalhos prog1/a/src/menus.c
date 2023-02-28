@@ -37,6 +37,6 @@ void imprimirTelaFinal(struct Game* game) {
     
     printw("\nVoce chegou na fase %d.\n", game->boneco->fase              );                                         
     printw("Sua pontuacao foi de %04d pontos.\n", game->boneco->pontos    );
-    printw("Game criado por Lucas Lopes\n"                );
+    printw("Game criado por Lucas Gabriel Batista Lopes\n"                );
     printw("\nDigite 'q' para sair."                                      );
 }

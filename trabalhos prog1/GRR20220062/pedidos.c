@@ -132,7 +132,7 @@ struct Lista* destruirLista(struct Lista* lista){
     if(!lista) return NULL;
 
     struct Pedido* remover = malloc(sizeof *remover),
-                 *tmp = lista->cabeca;
+                  *tmp = lista->cabeca;
     while(tmp){
         remover = pop(lista);
         tmp = tmp->prox;

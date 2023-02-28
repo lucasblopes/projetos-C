@@ -9,4 +9,4 @@ void imprimirInstrucoes();
 
 void imprimirTelaFinal(struct Game* game);
 
-#endif 
+#endif /* MENU_H */

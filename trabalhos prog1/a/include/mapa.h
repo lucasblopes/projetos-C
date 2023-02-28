@@ -7,4 +7,4 @@ struct Mapa* destruirMapa(struct Mapa* mapa);
 
 void imprimirMapa(struct Mapa* mapa);
 
-#endif 
+#endif /* MAP_H */

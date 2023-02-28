@@ -13,4 +13,4 @@ void imprimirGame(struct Game* game);
 
 struct Game* liberarMemoria(struct Game* game);
 
-#endif  
+#endif /* GAME_H */

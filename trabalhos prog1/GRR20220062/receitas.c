@@ -144,12 +144,13 @@ struct Receita* destruirReceita(struct Receita* ref){
         return NULL;
     
     struct Ingrediente *prox,
-        *atual = ref->primeiro;
+                       *atual = ref->primeiro;
     while(atual){
         prox = atual->prox;
         free(atual);
         atual = prox;
     }
+    free(ref);
     return NULL;
 }
 

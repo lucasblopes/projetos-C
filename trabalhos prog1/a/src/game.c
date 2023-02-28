@@ -9,7 +9,7 @@
 #include "personagem.h"
 #include "mapa.h"
 
-//numero de pedidos na fase 1
+//numero de pedidos por fase
 #define CLIENTES 5
 //coordenadas de spawn do jogador
 #define Y 3

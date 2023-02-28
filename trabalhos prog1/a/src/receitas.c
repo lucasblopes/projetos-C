@@ -150,6 +150,7 @@ struct Receita* destruirReceita(struct Receita* ref){
         free(atual);
         atual = prox;
     }
+    //free(ref);
     return NULL;
 }
 

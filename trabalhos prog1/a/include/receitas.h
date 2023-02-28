@@ -17,4 +17,4 @@ struct Receita* destruirReceita();
 
 struct Receita* destruirCardapio(struct Receita* cardapio);
 
-#endif 
+#endif /* RECEITAS_H */

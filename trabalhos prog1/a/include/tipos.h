@@ -43,4 +43,4 @@ struct Game{
     struct Lista* pedidos;
 };
 
-#endif  
+#endif /* TIPOS_H */

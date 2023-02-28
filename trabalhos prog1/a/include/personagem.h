@@ -15,4 +15,4 @@ int colisao(struct Game* game, int x, int y);
 
 struct Personagem* destruirPersonagem(struct Personagem* boneco);
 
-#endif  
+#endif /* PERSONAGEM_H */

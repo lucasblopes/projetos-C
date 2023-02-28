@@ -15,4 +15,4 @@ void imprimirPedidos();
 
 struct Lista* destruirLista();
 
-#endif  
+#endif /* PEDIDOS_H */
