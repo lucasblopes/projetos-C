@@ -1,16 +1,10 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <getopt.h>
 #include <unistd.h>
 
-#include "decode.h"
-#include "encode.h"
-#include "keys.h"
-
-/* TAREFAS
- organizar openfile/ closefile
- fazer funcoes free
-*/
+#include "../include/decode.h"
+#include "../include/encode.h"
+#include "../include/keys.h"
 
 FILE* openFile(char* directory, char* mode) {
 
@@ -28,7 +22,6 @@ int main (int argc, char **argv) {
 
     struct charList* charlist = newCharList();
 
-    char *value_e = NULL;
     char *value_b = NULL;
     char *value_m = NULL;
     char *value_o = NULL;
@@ -106,19 +99,22 @@ int main (int argc, char **argv) {
             
             cipherBook = openFile(value_b, "r");
             createKeyListFromBook(cipherBook, charlist);
-
             fclose(cipherBook);
         } else {
             
             keyFile = openFile(value_c, "r");
             createKeyListFromFile(keyFile, charlist);
+            fclose(keyFile);
         }
         decode(codedMsg, originalMsg, charlist);
-
         fclose(originalMsg);
         fclose(codedMsg);
     }
     
+    // releasing memory from lists
+    freeCharList(charlist->head);
+    free(charlist);
+    charlist = NULL;
 
     return 0;
 }

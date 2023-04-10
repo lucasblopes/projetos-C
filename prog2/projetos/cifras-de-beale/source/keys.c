@@ -1,8 +1,7 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "keys.h"
+#include "../include/keys.h"
 
 struct keyList* newKeyList() {
 
@@ -170,7 +169,7 @@ struct charNode* sortedCharacterInsertion(struct charList* charlist, char c) {
 void createKeyListFromBook(FILE* cipher, struct charList* charlist) {
 
     char c = 0;
-    int ret, next = 1, key = 0;
+    int next = 1, key = 0;
     struct charNode* charnode = NULL;
 
     while ((c = getc(cipher)) != EOF) {
@@ -235,4 +234,31 @@ void createKeyFile(FILE* keyFile, struct charList* charlist) {
     }
 }
 
- 
+void freeKeyList(struct keyNode *keynode) {
+
+    struct keyNode *tmp;
+
+    while (keynode != NULL) {
+
+        tmp = keynode->next;
+        free(keynode);
+        keynode = NULL;
+        keynode = tmp;
+    }
+}
+
+void freeCharList(struct charNode* charnode) {
+
+    struct charNode* tmp;
+
+    while (charnode != NULL) {
+        
+        tmp = charnode->next;
+        freeKeyList(charnode->keylist->head);
+        free(charnode->keylist);
+        charnode->keylist = NULL;
+        free(charnode);
+        charnode = NULL;
+        charnode = tmp;
+    }
+}
