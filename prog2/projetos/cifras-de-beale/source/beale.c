@@ -6,6 +6,8 @@
 #include "../include/encode.h"
 #include "../include/keys.h"
 
+/* tratar caracteres multibyte */
+
 FILE* openFile(char* directory, char* mode) {
 
     FILE* file = fopen(directory, mode);
