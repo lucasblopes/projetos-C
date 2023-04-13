@@ -1,1 +1,0 @@
-Ler uma string da entrada padrão e escrevê-la na saída padrão ao contrário (do final para o início), de forma similar ao comando rev do shell UNIX.
