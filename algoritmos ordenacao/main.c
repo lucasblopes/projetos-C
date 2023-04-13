@@ -30,6 +30,7 @@ void clonarVetor(int vetor1[], int vetor2[], int tam){
 
 //cria um vetor ordenado ao contrário
 int *criarVetorDecrescente(int tam) {
+	
 	int *vetor = malloc(tam * sizeof(*vetor));
 	if(vetor == NULL) {
 		printf("Falha fatal. Impossível alocar memoria para o vetor reverso.\n");
