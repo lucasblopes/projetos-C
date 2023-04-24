@@ -16,7 +16,6 @@ int main() {
         else 
         if (op == 'r')
             root = node_remove(search(root, key), root);
-        //root = tree_balance(root);
         getchar(); /* '/n' */
     }
 

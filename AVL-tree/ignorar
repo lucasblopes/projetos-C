@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "tree.h"
+
+#define max(a,b) (((a)>(b))?(a):(b))
+
+struct tNode *new_node(int key) {
+
+    struct tNode *node = malloc(sizeof(struct tNode));
+    if (!node) {
+        perror("Error on malloc!\n");
+        exit(1);
+    }
+
+    node->key = key;
+    node->height = 0;
+    node->parent = NULL;
+    node->right = NULL;
+    node->left = NULL;
+    return node;
+}
+
+int height(struct tNode *p) {
+
+    int hl, hr;
+
+    if (!p)
+        return -1;
+    
+    hl = height(p->left);
+    hr = height(p->right);
+
+    if(hl > hr)
+        return hl+1;
+    else
+        return hr+1;
+}
+
+struct tNode *left_rotation(struct tNode *p) {
+
+    struct tNode* q = p->right;
+
+    p->right = q->left;
+    q->parent = p->parent;
+    p->parent = q;
+
+    if (q->left)
+        q->left->parent = p;
+
+    q->left = p;
+
+    /* atualiza as alturas quando rotacionar */
+    q->height = height(q);
+    p->height = height(p);
+
+    return q;
+}
+
+struct tNode *right_rotation(struct tNode *p) {
+
+    struct tNode *q = p->left;
+
+    p->left = q->right;
+    q->parent = p->parent;
+    p->parent = q;
+
+    if (q->right)
+        q->right->parent = p;
+
+    q->right = p;
+    
+    /* atualiza as alturas quando rotacionar */
+    q->height = height(q);
+    p->height = height(p);
+
+    return q;
+}
+
+/* retorna a diferenca de nivel do nodo esquerdo e do direito, de um pai */
+int balance_factor(struct tNode* p) {
+
+    if (!p)
+        return 0;
+
+    return height(p->left) - height(p->right);
+}
+
+struct tNode *node_remove(struct tNode *node, struct tNode *root) {
+
+}
