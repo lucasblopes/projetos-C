@@ -88,4 +88,39 @@ int balance_factor(struct tNode* p) {
 
 struct tNode *node_remove(struct tNode *node, struct tNode *root) {
 
+    struct tNode *new_root = root, *s; /* successor */
+
+    if(!node->left) {
+        transplant(node, node->right);
+        free(node);
+    } 
+    else {
+    if (!node->right) {
+        transplant(node, node->left);
+        free(node);
+    } else {
+        s = minimum_value(node->right);
+        transplant(s, s->right);
+        s->left = node->left;
+        s->right = node->right;
+        transplant(node, s);
+        if (node == root)
+            new_root = s;
+        free(node);
+        }
+    }
+    return new_root;
 }
+
+/* verifica se a árvore está equilibrada e realiza rotações, se necessário */
+    bf = balance_factor(new_root);
+    if (bf > 1) {
+        if (balance_factor(new_root->left) < 0)
+            new_root->left = left_rotation(new_root->left);
+        new_root = right_rotation(new_root);
+    }
+    else if (bf < -1) {
+        if (balance_factor(new_root->right) > 0)
+            new_root->right = right_rotation(new_root->right);
+        new_root = left_rotation(new_root);
+    }

@@ -30,12 +30,12 @@ void free_tree(struct tNode *node) {
     free(node);
 }
 
-void inorder_walk(struct tNode *node) {
+void inorder_walk(struct tNode *node, int root_height) {
 
     if (node) {
-        inorder_walk(node->left);
-        printf("%d,%d\n", node->key, node->height);
-        inorder_walk(node->right);
+        inorder_walk(node->left, root_height);
+        printf("%d,%d\n", node->key, abs(node->height - root_height));
+        inorder_walk(node->right, root_height);
     }
 }
 
@@ -55,20 +55,12 @@ int height(struct tNode *p) {
         return hr+1;
 }
 
-struct tNode *minimum_value(struct tNode *node) {
+struct tNode *min_node(struct tNode *node) {
 
     if (node->left == NULL)
         return node;
     else
-        return minimum_value(node->left);
-}
-
-struct tNode *maximum_value(struct tNode *node) {
-
-    if (node->right == NULL)
-        return node;
-    else
-        return minimum_value(node->right);
+        return min_node(node->left);
 }
 
 /* binary search */
@@ -135,11 +127,6 @@ int balance_factor(struct tNode* p) {
     return height(p->left) - height(p->right);
 }
 
-struct tNode *tree_balance(struct tNode *node, int key) {
-
-    
-}
-
 struct tNode *node_include(struct tNode *node, int key) {
 
     if (!node)
@@ -155,7 +142,7 @@ struct tNode *node_include(struct tNode *node, int key) {
     }
 
     /* ---- balanceamento ---- */
-    node->height = height(node);
+    //node->height = height(node); nao precisa (ne?)
 
     if (balance_factor(node) > 1 && key < node->left->key) {
         return right_rotation(node);
@@ -178,7 +165,7 @@ struct tNode *node_include(struct tNode *node, int key) {
     return node; 
 }
 
-void transplant(struct tNode *node, struct tNode *new) {
+struct tNode *transplant(struct tNode *node, struct tNode *new) {
 
     if (node->parent) {
         if (node->parent->left == node)
@@ -190,53 +177,42 @@ void transplant(struct tNode *node, struct tNode *new) {
     }
 }
 
+void update_parent_height(struct tNode *p) {
+
+    if(!p)
+        return;
+
+    p->height = height(p);
+    update_parent_height(p->parent);
+}
+
 struct tNode *node_remove(struct tNode *node, struct tNode *root) {
 
-    struct tNode *new_root = root, *s; /* successor */
+    struct tNode *new_root = root, *parent = node->parent, *s; /* successor */
 
     if(!node->left) {
         transplant(node, node->right);
         free(node);
     } 
     else {
-        if (!node->right) {
-            transplant(node, node->left);
-            free(node);
-        }
-        else {
-            s = minimum_value(node->right);
-            s = right_rotation(s->parent);
-            left_rotation(node);
-            s->left = node->left;
-            node->left->parent = s;
-            if (node == root)
-                new_root = s;
-            free(node);
-            if (node == root)
-                new_root = s;
-            free(node);
+    if (!node->right) {
+        transplant(node, node->left);
+        free(node);
+    } else {
+        s = min_node(node->right);
+        transplant(s, s->right);
+        s->left = node->left;
+        s->right = node->right;
+        transplant(node, s);
+        if (node == root)
+            new_root = s;
+        free(node);
         }
     }
 
-    /* ---- balanceamento (nao funciona) ---- */
-    root->height = height(root);
-
-    if (balance_factor(root) > 1 && balance_factor(root->left) >= 0) { // LL
-        return right_rotation(root);
-    } 
-
-    if (balance_factor(root) > 1 && balance_factor(root->left) < 0) { // LR
-        root->left = left_rotation(root->left);
-        return right_rotation(root);
-    } 
-
-    if (balance_factor(root) < -1 && balance_factor(root->right) <= 0) { // RR
-        return left_rotation(root);
-    } 
-     
-    if (balance_factor(root) < -1 && balance_factor(root->right) > 0) { // RL
-        root->right = right_rotation(root->right);
-        return left_rotation(root);
+    while (parent) {
+        parent->height = height(parent);
+        parent = parent->parent;
     }
 
     return new_root;

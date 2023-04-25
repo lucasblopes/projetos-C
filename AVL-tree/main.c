@@ -19,7 +19,7 @@ int main() {
         getchar(); /* '/n' */
     }
 
-    inorder_walk(root);
+    inorder_walk(root, root->height);
     printf("\n");
     
     free_tree(root);

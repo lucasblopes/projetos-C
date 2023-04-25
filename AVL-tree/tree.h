@@ -15,7 +15,7 @@ struct tNode *node_remove(struct tNode *node, struct tNode *root);
 
 struct tNode *search(struct tNode *node, int key);
 
-void inorder_walk(struct tNode *node);
+void inorder_walk(struct tNode *node, int root_height);
 
 void free_tree(struct tNode *node);
 
