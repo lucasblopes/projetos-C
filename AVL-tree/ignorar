@@ -124,3 +124,92 @@ struct tNode *node_remove(struct tNode *node, struct tNode *root) {
             new_root->right = right_rotation(new_root->right);
         new_root = left_rotation(new_root);
     }
+
+
+/* Verifica se o nó a ser removido é a raiz e se possui filhos */
+    if (root->key == key && root->left && root->right) {
+        /* Busca o sucessor do nó raiz */
+        s = min_node(root->right);
+        /* Troca o valor da raiz pelo valor do sucessor */
+        root->key = s->key;
+        /* Remove o sucessor da subárvore direita */
+        root->right = node_remove(root->right, s->key);
+        /* Atualiza a altura do nó raiz */
+        root->height = height(root);
+        /* Realiza o balanceamento da árvore */
+        root = tree_balance(root);
+        return root;
+    }
+
+    struct tNode *node_remove(struct tNode *node, int key) {
+
+    struct tNode *parent = node->parent, *s; /* successor */
+
+    if (node->key == key) {
+        if (!node->left && !node->right) { /* caso 1: nodo nao tem filhos */
+            if (!parent) { /* caso especial: remover a raiz */
+                node = NULL;
+                return node;
+            }
+            if (parent->left == node)
+                parent->left = NULL;
+            else 
+                parent->right = NULL;
+            free(node);
+        } else
+        if (!node->left || !node->right) { /* caso 2: nodo tem apenas um filho */
+            if (!parent) {  /* caso especial: remover a raiz */
+                if (node->left) {
+                    node->left->parent = NULL;
+                    free(node);
+                    return node->left;
+                } else {
+                    node->right->parent = NULL;
+                    free(node);
+                    return node->right;
+                }
+            } else {
+                if (node->left) {
+                    if (parent->left == node)
+                        parent->left = node->left;
+                    else  
+                        parent->right = node->left;
+                    node->left->parent = parent;    
+                } else {
+                    if (parent->left == node)
+                        parent->left = node->left;
+                    else 
+                        parent->right = node->left;
+                    node->right->parent = parent;
+                }
+                free(node);
+            }
+            } else { /* caso 3: nodo tem os 2 filhos */
+                s = min_node(node->right);
+                s->right->parent = s->parent;
+                s->right = node->right;
+                s->left = node->left;
+                node->left->parent = s;
+                node->right->parent = s;
+                if (!parent)
+                    s->parent = NULL;
+                else {
+                    if (parent->left == node)
+                        parent->left = s;
+                    else 
+                        parent->right = s;
+                }
+                free(node);
+            }
+    } else {
+        if (key < node->key)
+            node->left = node_remove(node->left, key);
+        else
+            node->right = node_remove(node->right, key);
+    }
+
+    parent->height = height(parent);
+    parent = tree_balance(parent);
+
+    return parent;
+}

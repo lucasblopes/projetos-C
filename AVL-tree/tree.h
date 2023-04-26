@@ -11,11 +11,11 @@ struct tNode {
 
 struct tNode *node_include(struct tNode *node, int key);
 
-struct tNode *node_remove(struct tNode *node, struct tNode *root);
+struct tNode *node_remove(struct tNode *node, int key);
 
 struct tNode *search(struct tNode *node, int key);
 
-void inorder_walk(struct tNode *node, int root_height);
+void inorder_walk(struct tNode *node);
 
 void free_tree(struct tNode *node);
 

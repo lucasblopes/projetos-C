@@ -30,12 +30,23 @@ void free_tree(struct tNode *node) {
     free(node);
 }
 
-void inorder_walk(struct tNode *node, int root_height) {
+int depth(struct tNode *node) {
+
+    if (!node)
+        return;
+
+    if (!node->parent)
+        return 0;
+
+    node->height = depth(node->parent) + 1;
+}
+
+void inorder_walk(struct tNode *node) {
 
     if (node) {
-        inorder_walk(node->left, root_height);
-        printf("%d,%d\n", node->key, abs(node->height - root_height));
-        inorder_walk(node->right, root_height);
+        inorder_walk(node->left);
+        printf("%d,%d\n", node->key, node->height);
+        inorder_walk(node->right);
     }
 }
 
@@ -55,12 +66,12 @@ int height(struct tNode *p) {
         return hr+1;
 }
 
-struct tNode *min_node(struct tNode *node) {
+struct tNode *max_node(struct tNode *node) {
 
-    if (node->left == NULL)
+    if (node->right == NULL)
         return node;
     else
-        return min_node(node->left);
+        return max_node(node->right);
 }
 
 /* binary search */
@@ -124,7 +135,30 @@ int balance_factor(struct tNode* p) {
     if (!p)
         return 0;
 
-    return height(p->left) - height(p->right);
+    return (height(p->left) - height(p->right));
+}
+
+struct tNode* tree_balance(struct tNode* node) {
+
+    if (balance_factor(node) < -1 && balance_factor(node->right) <= 0) { /* LL */
+        return left_rotation(node);
+    }
+
+    if (balance_factor(node) > 1 && balance_factor(node->left) >= 0) { /* RR */
+        return right_rotation(node);
+    }
+
+    if (balance_factor(node) > 1 && balance_factor(node->left) < 0) { /* LR */
+        node->left = left_rotation(node->left);
+        return right_rotation(node);
+    }
+
+    if (balance_factor(node) < -1 && balance_factor(node->right) > 0) { /* RL */
+        node->right = right_rotation(node->right);
+        return left_rotation(node);
+    }
+
+    return node;
 }
 
 struct tNode *node_include(struct tNode *node, int key) {
@@ -138,34 +172,15 @@ struct tNode *node_include(struct tNode *node, int key) {
     else {
         node->right = node_include(node->right, key);
         node->right->parent = node;
-    
     }
 
-    /* ---- balanceamento ---- */
-    //node->height = height(node); nao precisa (ne?)
-
-    if (balance_factor(node) > 1 && key < node->left->key) {
-        return right_rotation(node);
-    }
-
-    if (balance_factor(node) > 1 && key > node->left->key) {
-        node->left = left_rotation(node->left);
-        return right_rotation(node);
-    }
-
-    if (balance_factor(node) < -1 && key > node->right->key) {
-        return left_rotation(node);
-    }
-
-    if (balance_factor(node) < -1 && key < node->right->key) {
-        node->right = right_rotation(node->right);
-        return left_rotation(node);
-    }
+    node->height = height(node);
+    node = tree_balance(node);
 
     return node; 
 }
 
-struct tNode *transplant(struct tNode *node, struct tNode *new) {
+void transplant(struct tNode *node, struct tNode *new) {
 
     if (node->parent) {
         if (node->parent->left == node)
@@ -177,43 +192,50 @@ struct tNode *transplant(struct tNode *node, struct tNode *new) {
     }
 }
 
-void update_parent_height(struct tNode *p) {
+struct tNode *node_remove(struct tNode *node, int key) {
 
-    if(!p)
-        return;
+    struct tNode *parent, *a; /* antecessor */
 
-    p->height = height(p);
-    update_parent_height(p->parent);
-}
+    if (!node)
+        return NULL;
 
-struct tNode *node_remove(struct tNode *node, struct tNode *root) {
+    parent = node->parent;
 
-    struct tNode *new_root = root, *parent = node->parent, *s; /* successor */
-
-    if(!node->left) {
-        transplant(node, node->right);
-        free(node);
-    } 
-    else {
-    if (!node->right) {
-        transplant(node, node->left);
-        free(node);
-    } else {
-        s = min_node(node->right);
-        transplant(s, s->right);
-        s->left = node->left;
-        s->right = node->right;
-        transplant(node, s);
-        if (node == root)
-            new_root = s;
-        free(node);
+    if (node->key == key) {
+        if(!node->left) {
+            transplant(node, node->right);
+            free(node);
+        } 
+        else {
+        if (!node->right) {
+            transplant(node, node->left);
+            free(node);
+        } else {
+            a = max_node(node->left);
+            transplant(a, a->left);
+            a->left = node->left;
+            a->right = node->right;
+            if (!parent) {
+                a->parent = NULL;
+                node->left->parent = a;
+                node->right->parent = a;
+            } else 
+                transplant(node, a);
+            free(node);
+            parent = a;
         }
     }
-
-    while (parent) {
-        parent->height = height(parent);
-        parent = parent->parent;
+    } else {
+        if (key < node->key)
+            node->left = node_remove(node->left, key);
+        else
+            node->right = node_remove(node->right, key);
     }
 
-    return new_root;
+    if (parent) {
+        parent->height = height(parent);
+        parent = tree_balance(parent);
+    }
+    
+    return parent;
 }

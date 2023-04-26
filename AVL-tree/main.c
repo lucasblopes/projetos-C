@@ -15,11 +15,11 @@ int main() {
             root = node_include(root, key);
         else 
         if (op == 'r')
-            root = node_remove(search(root, key), root);
+            root = node_remove(root, key);
         getchar(); /* '/n' */
     }
 
-    inorder_walk(root, root->height);
+    inorder_walk(root);
     printf("\n");
     
     free_tree(root);
