@@ -19,6 +19,7 @@ int main() {
         getchar(); /* '/n' */
     }
 
+    reset_level(root);
     inorder_walk(root);
     printf("\n");
     

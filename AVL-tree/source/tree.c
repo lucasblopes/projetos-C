@@ -3,8 +3,7 @@
 
 #include "tree.h"
 
-#define max(a,b) (((a)>(b))?(a):(b))
-
+/* aloca memoria para um novo nodo */
 struct tNode *new_node(int key) {
 
     struct tNode *node = malloc(sizeof(struct tNode));
@@ -21,6 +20,7 @@ struct tNode *new_node(int key) {
     return node;
 }
 
+/* libera memoria da arvore */
 void free_tree(struct tNode *node) {
 
     if (!node)
@@ -30,17 +30,22 @@ void free_tree(struct tNode *node) {
     free(node);
 }
 
-int depth(struct tNode *node) {
+/* recalcula o nivel da arvore avl inteira */
+void reset_level(struct tNode *node) {
 
     if (!node)
         return;
 
     if (!node->parent)
-        return 0;
+        node->height = 0;
+    else 
+        node->height = (node->parent->height) + 1;
 
-    node->height = depth(node->parent) + 1;
+    reset_level(node->left);
+    reset_level(node->right);
 }
 
+/* realiza a caminhada em ordem na arvore */
 void inorder_walk(struct tNode *node) {
 
     if (node) {
@@ -50,6 +55,7 @@ void inorder_walk(struct tNode *node) {
     }
 }
 
+/* calcula a altura de um nodo */
 int height(struct tNode *p) {
 
     int hl, hr;
@@ -66,6 +72,7 @@ int height(struct tNode *p) {
         return hr+1;
 }
 
+/* retorna o maior nodo de uma arvore binaria */
 struct tNode *max_node(struct tNode *node) {
 
     if (node->right == NULL)
@@ -74,21 +81,7 @@ struct tNode *max_node(struct tNode *node) {
         return max_node(node->right);
 }
 
-/* binary search */
-struct tNode *search(struct tNode *node, int key) {
-
-    if (!node)
-        return NULL;
-
-    if (node->key == key)
-        return node;
-
-    if (key < node->key)
-        return search(node->left, key);
-    else 
-        return search(node->right, key);
-}
-
+/* rotacao esquerda de uma sub-arvore */
 struct tNode *left_rotation(struct tNode *p) {
 
     struct tNode* q = p->right;
@@ -109,6 +102,7 @@ struct tNode *left_rotation(struct tNode *p) {
     return q;
 }
 
+/* rotacao direita de uma sub-arvore */
 struct tNode *right_rotation(struct tNode *p) {
 
     struct tNode *q = p->left;
@@ -138,6 +132,7 @@ int balance_factor(struct tNode* p) {
     return (height(p->left) - height(p->right));
 }
 
+/* realiza o balancemento de uma arvore avl cobrindo todos os casos de rotacoes */
 struct tNode* tree_balance(struct tNode* node) {
 
     if (balance_factor(node) < -1 && balance_factor(node->right) <= 0) { /* LL */
@@ -161,6 +156,7 @@ struct tNode* tree_balance(struct tNode* node) {
     return node;
 }
 
+/* realiza a inclusao de um nodo em uma arvore avl e realiza o balanceamento, se necessario */
 struct tNode *node_include(struct tNode *node, int key) {
 
     if (!node)
@@ -180,6 +176,7 @@ struct tNode *node_include(struct tNode *node, int key) {
     return node; 
 }
 
+/* realiza o transplante de dois nodos, atualizando as suas hierarquias */
 void transplant(struct tNode *node, struct tNode *new) {
 
     if (node->parent) {
@@ -189,53 +186,36 @@ void transplant(struct tNode *node, struct tNode *new) {
             node->parent->right = new;
         if (new)
             new->parent = node->parent;
-    }
+    } 
 }
 
-struct tNode *node_remove(struct tNode *node, int key) {
-
-    struct tNode *parent, *a; /* antecessor */
+/* remove um nodo da arvore avl e realiza o balancemanto, se necessario */
+struct tNode *node_remove(struct tNode* node, int key) {
 
     if (!node)
         return NULL;
 
-    parent = node->parent;
-
     if (node->key == key) {
-        if(!node->left) {
-            transplant(node, node->right);
+        if (!node->left) { /* remove nodo com no maximo um filho */
+            struct tNode *temp = node->left ? node->left : node->right;
+            transplant(node, temp);
             free(node);
-        } 
-        else {
-        if (!node->right) {
-            transplant(node, node->left);
-            free(node);
-        } else {
-            a = max_node(node->left);
-            transplant(a, a->left);
-            a->left = node->left;
-            a->right = node->right;
-            if (!parent) {
-                a->parent = NULL;
-                node->left->parent = a;
-                node->right->parent = a;
-            } else 
-                transplant(node, a);
-            free(node);
-            parent = a;
+            return temp;
+        } else {    /* remove nodo com dois filhos usando o antecessor */
+            struct tNode *anteccessor = max_node(node->left);
+            node->key = anteccessor->key;
+            node->left = node_remove(node->left, anteccessor->key);
+            return node;
         }
     }
-    } else {
-        if (key < node->key)
-            node->left = node_remove(node->left, key);
-        else
-            node->right = node_remove(node->right, key);
-    }
+    /* busca binaria do nodo */
+    if (key < node->key)
+        node->left = node_remove(node->left, key);
+    else
+        node->right = node_remove(node->right, key);
 
-    if (parent) {
-        parent->height = height(parent);
-        parent = tree_balance(parent);
-    }
-    
-    return parent;
+    node->height = height(node);
+    node = tree_balance(node);
+
+    return node;
 }
