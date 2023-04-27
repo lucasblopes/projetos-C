@@ -14,9 +14,7 @@ struct tNode *node_include(struct tNode *node, int key);
 
 struct tNode *node_remove(struct tNode *node, int key); 
 
-void reset_level(struct tNode *node);
-
-void inorder_walk(struct tNode *node);
+void inorder_print(struct tNode *node, int level);
 
 void free_tree(struct tNode *node);
 

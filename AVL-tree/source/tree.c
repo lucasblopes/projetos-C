@@ -30,28 +30,13 @@ void free_tree(struct tNode *node) {
     free(node);
 }
 
-/* recalcula o nivel da arvore avl inteira */
-void reset_level(struct tNode *node) {
-
-    if (!node)
-        return;
-
-    if (!node->parent)
-        node->height = 0;
-    else 
-        node->height = (node->parent->height) + 1;
-
-    reset_level(node->left);
-    reset_level(node->right);
-}
-
 /* realiza a caminhada em ordem na arvore */
-void inorder_walk(struct tNode *node) {
+void inorder_print(struct tNode *node, int level) {
 
     if (node) {
-        inorder_walk(node->left);
-        printf("%d,%d\n", node->key, node->height);
-        inorder_walk(node->right);
+        inorder_print(node->left, level + 1);
+        printf("%d,%d\n", node->key, level);
+        inorder_print(node->right, level + 1);
     }
 }
 

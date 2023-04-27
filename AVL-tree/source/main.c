@@ -19,8 +19,8 @@ int main() {
         getchar(); /* '/n' */
     }
 
-    reset_level(root);
-    inorder_walk(root);
+    //reset_level(root);
+    inorder_print(root, 0);
     printf("\n");
     
     free_tree(root);
