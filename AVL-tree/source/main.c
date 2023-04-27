@@ -19,10 +19,7 @@ int main() {
         getchar(); /* '/n' */
     }
 
-    //reset_level(root);
-    inorder_print(root, 0);
-    printf("\n");
-    
+    inorder_print(root, 0);    
     free_tree(root);
 
     return 0;
