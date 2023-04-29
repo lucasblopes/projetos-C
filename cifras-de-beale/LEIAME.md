@@ -10,7 +10,7 @@ GRR20220062
 ## Uso
 
 ```
-   (1) Codificar uma mensagem qualquer contida em um arquivo ASCII usando um livro cifra:
+   (1) Codificar uma mensagem qualquer contida em um arquivo ASCII usando um livro cifra
 
    ./beale  -e  -b LivroCifra -m MensagemOriginal -o MensagemCodificada -c ArquivoDeChaves 
 
@@ -18,7 +18,7 @@ GRR20220062
 
    ./beale  -d  -i MensagemCodificada  -c ArquivoDeChaves  -o MensagemDecodificada 
 
-   (3)
+   (3) .Decodificar uma mensagem usando o livro cifra
 
    ./beale -d -i MensagemCodificada -b LivroCifra -o MensagemDecodificada 
 ```
@@ -27,7 +27,7 @@ GRR20220062
 
 # keys.h
 
-Esse módulo contém as funções relacionadas às listas de caracteres e chaves e também aos arquivos necessários para o programa. Assim, estão presentas as funções de iniciar e liberar memória das listas, realizar inserções, remoções e busca de nodos, além das funções que montam as listas de chaves e que criam o arquivo de chaves.
+Esse módulo contém as funções relacionadas às listas de caracteres, chaves e aos arquivos necessários para o programa. Assim, estão presentas as funções de iniciar e liberar memória das listas, realizar inserções, remoções e busca de nodos, além das funções que montam as listas de chaves e que criam o arquivo de chaves.
 
 A estrutura de dados utilizada para resolver o problema de forma eficiente foi uma lista de chaves dentro de uma lista de caracteres.
 
@@ -81,11 +81,11 @@ Aqui, o programa cria um arquivo de chaves com base nas estruturas de charactere
 
 # encode.h
 
-Esse bloco é responsável por codificar uma mensagem dada utilizando as listas de caracteres/chaves já montadas.
+Esse bloco é responsável por criar o arquivo "MensagemCodificada", dada uma mensagem original, utilizando as listas de caracteres/chaves já montadas.
 
-O funcionamento do algoritmo funciona utilizando a função encode(args..) e catch_random_key(args..) de modo a ler um caractere da mensagem e buscar uma chave aleatória presente no "charNode" correspondente ao caracter.
+O funcionamento do algoritmo funciona utilizando a função encode(args..) e catch_random_key(args..) de modo a ler um caractere da mensagem original e buscar uma chave aleatória presente no "charNode" correspondente ao caractere.
 
--Dígitos especiais:
+- Dígitos especiais:
 ```
 (-1) : indica um espaço
 
