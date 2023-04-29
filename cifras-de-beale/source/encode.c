@@ -5,44 +5,45 @@
 #include "../include/encode.h"
 #include "../include/keys.h"
 
-// return a random key of the character node
-int catchRandomKey(struct charList* charlist, char c) {
+/* retorna uma chave aleatoria do caractere */
+int catch_random_key(struct charList* charlist, char c) {
 
-    struct charNode* character = searchCharacter(charlist, c);
-    struct keyNode* keyAux;
+    struct charNode* character = search_character(charlist, c);
+    struct keyNode* key_aux;
     int i;
 
     if (character != NULL) {
         i = rand() % (character->keylist->size);
-        keyAux = character->keylist->head;
+        key_aux = character->keylist->head;
         for(int j = 0; j < i; j++) {
-            keyAux = keyAux->next;
+            key_aux = key_aux->next;
         }
-        return keyAux->value;
+        return key_aux->value;
     }
 
-    return -3; // '-3' means the character was not found
+    return -3; /* caracter nao encontrado em charList */
 }
 
+/* realiza a codificacao de uma mensagem utilizando a lista de caracteres criada */
 void encode(FILE* original, FILE* coded, struct charList* charlist) {
 
     int key;
     char c;
     
-    srand((unsigned)time(NULL)); // generate random seed
+    srand((unsigned)time(NULL)); /* gera uma seed aleatoria */
 
     while ((c = getc(original)) != EOF) {
 
         if (c == ' ') {
-            fprintf(coded, "-1 ");
+            fprintf(coded, "-1 "); /* espaco */
             continue;
         }
         if (c == '\n') {
-            fprintf(coded, "-2 ");
+            fprintf(coded, "-2 "); /* nova linha */
             continue;
         }
         
-        key = catchRandomKey(charlist, tolower(c));
+        key = catch_random_key(charlist, tolower(c));
         fprintf(coded, "%d ", key);
     }
 }

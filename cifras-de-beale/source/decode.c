@@ -1,48 +1,49 @@
 #include "../include/decode.h"
 
-// returns the character of the key
-char findKey(struct charList* charlist, int key) {
+/* retorna o caractere atrelado a chave */
+char find_key(struct charList* charlist, int key) {
 
-    struct charNode* charAux = charlist->head;
-    struct keyNode* keyAux;
+    struct charNode* char_aux = charlist->head;
+    struct keyNode* key_aux;
 
-    while (charAux) {
-       keyAux = charAux->keylist->head;
-       while (keyAux) {
-            if (keyAux->value == key)
-                return charAux->character;
-            keyAux = keyAux->next;
+    while (char_aux) {
+       key_aux = char_aux->keylist->head;
+       while (key_aux) {
+            if (key_aux->value == key)
+                return char_aux->character;
+            key_aux = key_aux->next;
         }
-        charAux = charAux->next;
-        keyAux = charAux->keylist->head;
+        char_aux = char_aux->next;
+        key_aux = char_aux->keylist->head;
     }
 
-    return '?'; // "?" means that the number has no corresponding character
+    return '?'; /* numero nao tem caractere correspondente */
 }
 
-void decode(FILE* codedMsg, FILE* decodedMsg, struct charList* charlist) {
+/* realiza a decodificacao de uma mensagem codificada utilizando a lista de caracteres */
+void decode(FILE* coded_msg, FILE* decoded_msg, struct charList* charlist) {
     
     int numb, ret;
 
-    while ((ret = fscanf(codedMsg, "%d", &numb)) != EOF) {
+    while ((ret = fscanf(coded_msg, "%d", &numb)) != EOF) {
         
         if (ret > 0) {
             switch (numb) {
                 case -1:
-                    fprintf(decodedMsg, " ");
+                    fprintf(decoded_msg, " ");
                     continue;
                 case -2:
-                    fprintf(decodedMsg, "\n");
+                    fprintf(decoded_msg, "\n");
                     continue;
                 case -3:
-                    fprintf(decodedMsg, "(?)");
+                    fprintf(decoded_msg, "(?)");
                     continue;
             }
-        fprintf(decodedMsg, "%c", findKey(charlist, numb));
+        fprintf(decoded_msg, "%c", find_key(charlist, numb));
         }
-        // if reading fails
+        /* caso a leitura falhe */
         else
-            fgetc (codedMsg);
+            fgetc (coded_msg);
     }
 }
 

@@ -29,16 +29,16 @@ struct charList {
     struct charNode* tail;
 };
 
-struct charList* newCharList();
+struct charList* new_charlist();
 
-void createKeyListFromBook(FILE* cipher, struct charList* charlist);
+void create_keylist_book(FILE* cipher, struct charList* charlist);
 
-void createKeyFile(FILE* keyFile, struct charList* charlist);
+void create_keyfile(FILE* key_file, struct charList* charlist);
 
-void createKeyListFromFile(FILE* keyFile, struct charList* charlist);
+void create_keylist_file(FILE* key_file, struct charList* charlist);
 
-struct charNode* searchCharacter(struct charList* charlist, char c);
+struct charNode* search_character(struct charList* charlist, char c);
 
-void freeCharList(struct charNode* charnode);
+void free_charlist(struct charNode* charnode);
 
 #endif

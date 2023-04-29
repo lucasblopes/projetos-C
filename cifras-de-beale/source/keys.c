@@ -3,170 +3,173 @@
 
 #include "../include/keys.h"
 
-struct keyList* newKeyList() {
+/* inicializa uma lista de chaves */
+struct keyList* new_keylist() {
 
-    struct keyList* newList = malloc(sizeof(struct keyList));
-    if (!newList) {
+    struct keyList* new_list = malloc(sizeof(struct keyList));
+    if (!new_list) {
         perror("Error on malloc");
         return NULL;
     }
 
-    newList->head = NULL;
-    newList->tail = NULL;
-    newList->size = 0;
+    new_list->head = NULL;
+    new_list->tail = NULL;
+    new_list->size = 0;
 
-    return newList;
+    return new_list;
 }
 
-struct charList* newCharList() {
+struct charList* new_charlist() {
 
-    struct charList* newList = malloc(sizeof(struct charList));
-    if (!newList) {
+    struct charList* new_list = malloc(sizeof(struct charList));
+    if (!new_list) {
         perror("Error on malloc");
         return NULL;
     }
 
-    newList->head = NULL;
-    newList->tail = NULL;
+    new_list->head = NULL;
+    new_list->tail = NULL;
 
-    return newList;
+    return new_list;
 }
 
-struct charNode* searchCharacter(struct charList* charlist, char c) {
+/* retorna um nodo da lista de caracteres, ou NULL, caso nao encontre */
+struct charNode* search_character(struct charList* charlist, char c) {
 
-    struct charNode* charAux = charlist->head;
+    struct charNode* char_aux = charlist->head;
 
-    while (charAux) {
-        if (charAux->character == c)
-            return charAux;
+    while (char_aux) {
+        if (char_aux->character == c)
+            return char_aux;
 
-        charAux = charAux->next;
+        char_aux = char_aux->next;
     }
     
     return NULL;
 }
 
-// insert the key into the head of the keyList
-void headKeyInsertion(struct keyList* keylist, int key) {
+/* insere uma chave na cabeca da lista de chaves */
+void head_key_insertion(struct keyList* keylist, int key) {
 
-    struct keyNode* newKey = malloc(sizeof(struct keyNode));
-    if (!newKey) {
+    struct keyNode* new_key = malloc(sizeof(struct keyNode));
+    if (!new_key) {
         perror("Error on malloc");
         exit (1);
     }
-    newKey->value = key;
-    //in case the list is empty
+    new_key->value = key;
+    /* caso a lista esteja vazia */
     if (!keylist->head) {
-        newKey->next = NULL;
-        keylist->head = newKey;
-        keylist->tail = newKey;
+        new_key->next = NULL;
+        keylist->head = new_key;
+        keylist->tail = new_key;
     } else {
-        newKey->next = keylist->head;
-        keylist->head = newKey;
+        new_key->next = keylist->head;
+        keylist->head = new_key;
     }
     keylist->size += 1;
 }
 
-// insert the key into the tail of the keyList
-void tailKeyInsertion(struct keyList* keylist, int key) {
+/* insere uma chave na cauda da lista de chaves */
+void tail_key_insertion(struct keyList* keylist, int key) {
 
-    struct keyNode* newKey = malloc(sizeof(struct keyNode));
-    if (!newKey) {
+    struct keyNode* new_key = malloc(sizeof(struct keyNode));
+    if (!new_key) {
         perror("Error on malloc");
         exit (1);
     }
-    newKey->value = key;
-    newKey->next = NULL;
-    //in case the list is empty
+    new_key->value = key;
+    new_key->next = NULL;
+    /* caso a lista esteja vazia */
     if (!keylist->head) {
-        keylist->head = newKey;
-        keylist->tail = newKey;
+        keylist->head = new_key;
+        keylist->tail = new_key;
     } else {
-        keylist->tail->next = newKey;
-        keylist->tail = newKey;
+        keylist->tail->next = new_key;
+        keylist->tail = new_key;
     }
     keylist->size += 1;
 }   
 
 
-// head insertion into character list
-struct charNode* headCharacterInsertion(struct charList* charlist, char c) {
+/* insere um nodo na cabeca da lista de caracteres */
+struct charNode* head_character_insertion(struct charList* charlist, char c) {
 
-    struct charNode* newChar = malloc(sizeof(struct charNode));
-    if (!newChar) {
+    struct charNode* new_char = malloc(sizeof(struct charNode));
+    if (!new_char) {
         perror("Error on malloc");
         exit (1);
     }
-    newChar->character = c;
-    newChar->keylist = newKeyList();
+    new_char->character = c;
+    new_char->keylist = new_keylist();
 
-    //in case the list is empty
+    /* caso a lista esteja vazia */
     if (!charlist->head) {
-        newChar->next = NULL;
-        charlist->head = newChar;
-        charlist->tail = newChar;
+        new_char->next = NULL;
+        charlist->head = new_char;
+        charlist->tail = new_char;
     } else {
-        newChar->next = charlist->head;
-        charlist->head = newChar;
+        new_char->next = charlist->head;
+        charlist->head = new_char;
     }
 
-    return newChar;
+    return new_char;
 }   
 
-// tail insertion into character list
-struct charNode* tailCharacterInsertion(struct charList* charlist, char c) {
+/* insere um nodo na cauda da lista de caracteres */
+struct charNode* tail_character_insertion(struct charList* charlist, char c) {
     
-    struct charNode* newChar = malloc(sizeof(struct charNode));
-    if (!newChar) {
+    struct charNode* new_char = malloc(sizeof(struct charNode));
+    if (!new_char) {
         perror("Error on malloc");
         exit (1);
     }
-    newChar->character = c;
-    newChar->next = NULL;
-    newChar->keylist = newKeyList();
+    new_char->character = c;
+    new_char->next = NULL;
+    new_char->keylist = new_keylist();
 
-    //in case the list is empty
+    /* caso a lista esteja vazia */
     if (!charlist->head) { 
-        charlist->head = newChar;
-        charlist->tail = newChar;
+        charlist->head = new_char;
+        charlist->tail = new_char;
     } else {
-        charlist->tail->next = newChar;
-        charlist->tail = newChar;
+        charlist->tail->next = new_char;
+        charlist->tail = new_char;
     }
     
-    return newChar;
+    return new_char;
 }
 
-// sorted insertion into character list
-struct charNode* sortedCharacterInsertion(struct charList* charlist, char c) {
+/* insere ordenado na lista de caracteres */
+struct charNode* sorted_character_insertion(struct charList* charlist, char c) {
 
-    // in case the list is empty or the character is before the head
+    /* caso a lista esteja vazia ou o caractere esteja antes da cabeca */
     if (!charlist->head || c < charlist->head->character) {
-        return headCharacterInsertion(charlist, c);
+        return head_character_insertion(charlist, c);
     }
-    // in the case the character is after the tail
+    /* se o caractere estiver antes da cauda */
     if (c > charlist->tail->character) {
-        return tailCharacterInsertion(charlist, c);
+        return tail_character_insertion(charlist, c);
     }
-    struct charNode *aux, *newChar = malloc(sizeof(struct charNode));
-    if (!newChar) {
+    struct charNode *aux, *new_char = malloc(sizeof(struct charNode));
+    if (!new_char) {
         perror("Error on malloc");
         exit (1);
     }
  
-    newChar->character = c;
-    newChar->keylist = newKeyList();
+    new_char->character = c;
+    new_char->keylist = new_keylist();
 
     aux = charlist->head;
-    while(aux->next && newChar->character > aux->next->character)
+    while(aux->next && new_char->character > aux->next->character)
         aux = aux->next;
-    newChar->next = aux->next;
-    aux->next = newChar;
+    new_char->next = aux->next;
+    aux->next = new_char;
 
-    return newChar;
+    return new_char;
 }
 
-void createKeyListFromBook(FILE* cipher, struct charList* charlist) {
+/* cria o arquivo de chaves atraves do livro cifra */
+void create_keylist_book(FILE* cipher, struct charList* charlist) {
 
     char c = 0;
     int next = 1, key = 0;
@@ -180,10 +183,10 @@ void createKeyListFromBook(FILE* cipher, struct charList* charlist) {
         }
 
         if (next) {
-            charnode = searchCharacter(charlist, tolower(c));
+            charnode = search_character(charlist, tolower(c));
             if (!charnode)
-                charnode = sortedCharacterInsertion(charlist, tolower(c));
-            headKeyInsertion(charnode->keylist, key);
+                charnode = sorted_character_insertion(charlist, tolower(c));
+            head_key_insertion(charnode->keylist, key);
             key++;
             next = 0;
         }
@@ -191,24 +194,25 @@ void createKeyListFromBook(FILE* cipher, struct charList* charlist) {
     
 }
 
-void createKeyListFromFile(FILE* keyFile, struct charList* charlist) {
+/* cria a lista de caracteres/chaves atraves de um arquivo de chaves */
+void create_keylist_file(FILE* key_file, struct charList* charlist) {
 
     struct charNode* charnode;
     int key, newline = 1;
     char c;
 
-    while ((c = getc(keyFile)) != EOF) {
+    while ((c = getc(key_file)) != EOF) {
 
         if (newline) {
 
-            charnode = tailCharacterInsertion(charlist, c);
+            charnode = tail_character_insertion(charlist, c);
             newline = 0;
         } 
         else if (isdigit(c)) {
 
-            ungetc(c, keyFile);
-            fscanf(keyFile, "%d", &key);
-            tailKeyInsertion(charnode->keylist, key);
+            ungetc(c, key_file);
+            fscanf(key_file, "%d", &key);
+            tail_key_insertion(charnode->keylist, key);
         }
         else if (c == '\n') {
             newline = 1;
@@ -216,25 +220,27 @@ void createKeyListFromFile(FILE* keyFile, struct charList* charlist) {
     }
 }
 
-void createKeyFile(FILE* keyFile, struct charList* charlist) {
+/* cria o arquivo de chaves */
+void create_keyfile(FILE* key_file, struct charList* charlist) {
 
-    struct charNode* charAux = charlist->head;
-    struct keyNode* keyAux;
+    struct charNode* char_aux = charlist->head;
+    struct keyNode* key_aux;
 
-    while (charAux) {
-        keyAux = charAux->keylist->head;
-        fprintf(keyFile, "%c: ", charAux->character);
-        while (keyAux) {
-            fprintf(keyFile, "%d ", keyAux->value);
-            keyAux = keyAux->next;
+    while (char_aux) {
+        key_aux = char_aux->keylist->head;
+        fprintf(key_file, "%c: ", char_aux->character);
+        while (key_aux) {
+            fprintf(key_file, "%d ", key_aux->value);
+            key_aux = key_aux->next;
         }
-        fprintf(keyFile, "\n");
+        fprintf(key_file, "\n");
 
-        charAux = charAux->next;
+        char_aux = char_aux->next;
     }
 }
 
-void freeKeyList(struct keyNode *keynode) {
+/* libera memoria alocada as listas de chaves */
+void free_keylist(struct keyNode *keynode) {
 
     struct keyNode *tmp;
 
@@ -247,14 +253,15 @@ void freeKeyList(struct keyNode *keynode) {
     }
 }
 
-void freeCharList(struct charNode* charnode) {
+/* libera memoria alocada a lista de caracteres */
+void free_charlist(struct charNode* charnode) {
 
     struct charNode* tmp;
 
     while (charnode != NULL) {
         
         tmp = charnode->next;
-        freeKeyList(charnode->keylist->head);
+        free_keylist(charnode->keylist->head);
         free(charnode->keylist);
         charnode->keylist = NULL;
         free(charnode);

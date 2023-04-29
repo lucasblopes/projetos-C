@@ -6,9 +6,7 @@
 #include "../include/encode.h"
 #include "../include/keys.h"
 
-/* tratar caracteres multibyte */
-
-FILE* openFile(char* directory, char* mode) {
+FILE* open_file(char* directory, char* mode) {
 
     FILE* file = fopen(directory, mode);
 
@@ -22,7 +20,7 @@ FILE* openFile(char* directory, char* mode) {
 
 int main (int argc, char **argv) {
 
-    struct charList* charlist = newCharList();
+    struct charList* charlist = new_charlist();
 
     char *value_b = NULL;
     char *value_m = NULL;
@@ -34,10 +32,10 @@ int main (int argc, char **argv) {
     int flag_e = 0;
     int option;
  
-    FILE* originalMsg;
-    FILE* cipherBook;
-    FILE* keyFile;
-    FILE* codedMsg;
+    FILE* original_msg;
+    FILE* cipher_book;
+    FILE* key_file;
+    FILE* coded_msg;
 
     while ((option = getopt (argc, argv, "edb:i:m:o:c:")) != -1) {
         switch (option) {
@@ -77,44 +75,44 @@ int main (int argc, char **argv) {
     
     if (flag_e) {
 
-        originalMsg = openFile(value_m, "r");
-        cipherBook = openFile(value_b, "r");
-        keyFile = openFile(value_c, "w");
-        codedMsg = openFile(value_o, "w");
+        original_msg = open_file(value_m, "r");
+        cipher_book = open_file(value_b, "r");
+        key_file = open_file(value_c, "w");
+        coded_msg = open_file(value_o, "w");
 
-        createKeyListFromBook(cipherBook, charlist);
-        encode(originalMsg, codedMsg, charlist);
-        createKeyFile(keyFile, charlist);
+        create_keylist_book(cipher_book, charlist);
+        encode(original_msg, coded_msg, charlist);
+        create_keyfile(key_file, charlist);
 
-        fclose(originalMsg);
-        fclose(cipherBook);
-        fclose(keyFile);
-        fclose(codedMsg);
+        fclose(original_msg);
+        fclose(cipher_book);
+        fclose(key_file);
+        fclose(coded_msg);
     }
 
 
     if (flag_d) {
 
-        codedMsg = openFile(value_i, "r");
-        originalMsg = openFile(value_o, "w");
+        coded_msg = open_file(value_i, "r");
+        original_msg = open_file(value_o, "w");
         if (flag_b) {
             
-            cipherBook = openFile(value_b, "r");
-            createKeyListFromBook(cipherBook, charlist);
-            fclose(cipherBook);
+            cipher_book = open_file(value_b, "r");
+            create_keylist_book(cipher_book, charlist);
+            fclose(cipher_book);
         } else {
             
-            keyFile = openFile(value_c, "r");
-            createKeyListFromFile(keyFile, charlist);
-            fclose(keyFile);
+            key_file = open_file(value_c, "r");
+            create_keylist_file(key_file, charlist);
+            fclose(key_file);
         }
-        decode(codedMsg, originalMsg, charlist);
-        fclose(originalMsg);
-        fclose(codedMsg);
+        decode(coded_msg, original_msg, charlist);
+        fclose(original_msg);
+        fclose(coded_msg);
     }
     
-    // releasing memory from lists
-    freeCharList(charlist->head);
+    /* libera memoria alocada */
+    free_charlist(charlist->head);
     free(charlist);
     charlist = NULL;
 
