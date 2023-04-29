@@ -2,8 +2,8 @@
 
 ---
 
-Lucas Gabriel Batista Lopes 
-GRR20220062
+- Lucas Gabriel Batista Lopes 
+- GRR20220062
 
 ---
 
