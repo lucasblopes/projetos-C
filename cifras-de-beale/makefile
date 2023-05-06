@@ -18,4 +18,7 @@ $(TARGET) : $(OBJFILES)
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $^
 
 clean:
-	rm -f $(TARGET) $(OBJFILES)
+	-rm -f source/*.o
+
+purge: clean
+	-rm -f *.txt beale

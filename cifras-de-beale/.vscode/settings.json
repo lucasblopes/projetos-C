@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "decode.h": "c",
-        "encode.h": "c",
-        "keys.h": "c",
-        "time.h": "c",
-        "keys-backup(1)": "c"
-    }
-}

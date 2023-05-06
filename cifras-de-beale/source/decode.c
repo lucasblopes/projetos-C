@@ -4,7 +4,7 @@
 char find_key(struct charList* charlist, int key) {
 
     struct charNode* char_aux = charlist->head;
-    struct keyNode* key_aux;
+    struct keyNode* key_aux = NULL;
 
     while (char_aux) {
        key_aux = char_aux->keylist->head;
@@ -14,7 +14,8 @@ char find_key(struct charList* charlist, int key) {
             key_aux = key_aux->next;
         }
         char_aux = char_aux->next;
-        key_aux = char_aux->keylist->head;
+        if (char_aux)   /* verifica se existe antes de acessar seus membros */
+            key_aux = char_aux->keylist->head;
     }
 
     return '?'; /* numero nao tem caractere correspondente */
@@ -27,6 +28,7 @@ void decode(FILE* coded_msg, FILE* decoded_msg, struct charList* charlist) {
 
     while ((ret = fscanf(coded_msg, "%d", &numb)) != EOF) {
         
+        char c;
         if (ret > 0) {
             switch (numb) {
                 case -1:
@@ -39,7 +41,10 @@ void decode(FILE* coded_msg, FILE* decoded_msg, struct charList* charlist) {
                     fprintf(decoded_msg, "(?)");
                     continue;
             }
-        fprintf(decoded_msg, "%c", find_key(charlist, numb));
+        if ((c = find_key(charlist, numb)) == '?') 
+            fprintf(decoded_msg, "(?)");
+        else 
+            fprintf(decoded_msg, "%c", c);
         }
         /* caso a leitura falhe */
         else
