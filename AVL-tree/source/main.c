@@ -12,7 +12,7 @@ int main() {
     while (scanf("%c %d", &op, &key) == 2) {
 
         if (op == 'i')
-            root = node_include(root, key);
+            root = node_insert(root, key);
         else 
         if (op == 'r')
             root = node_remove(root, key);

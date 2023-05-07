@@ -30,7 +30,7 @@ void free_tree(struct tNode *node) {
     free(node);
 }
 
-/* realiza a caminhada em ordem na arvore */
+/* realiza a caminhada em ordem na arvore e imprime as chaves */
 void inorder_print(struct tNode *node, int level) {
 
     if (node) {
@@ -142,16 +142,16 @@ struct tNode* tree_balance(struct tNode* node) {
 }
 
 /* realiza a inclusao de um nodo em uma arvore avl e realiza o balanceamento, se necessario */
-struct tNode *node_include(struct tNode *node, int key) {
+struct tNode *node_insert(struct tNode *node, int key) {
 
     if (!node)
         return new_node(key);
     if (key < node->key) {
-        node->left = node_include(node->left, key);
+        node->left = node_insert(node->left, key);
         node->left->parent = node; 
     }
     else {
-        node->right = node_include(node->right, key);
+        node->right = node_insert(node->right, key);
         node->right->parent = node;
     }
 
