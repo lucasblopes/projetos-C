@@ -18,7 +18,7 @@ int main() {
             root = node_remove(root, key);
         getchar(); /* '/n' */
     }
-    
+
     inorder_print(root, 0);    
     free_tree(root);
 

@@ -149,8 +149,8 @@ struct tNode *node_insert(struct tNode *node, int key) {
     if (key < node->key) {
         node->left = node_insert(node->left, key);
         node->left->parent = node; 
-    } else 
-    if (key > node->key) { /* evita repeticao de nodo */
+    }
+    else {
         node->right = node_insert(node->right, key);
         node->right->parent = node;
     }
@@ -161,6 +161,19 @@ struct tNode *node_insert(struct tNode *node, int key) {
     return node; 
 }
 
+/* realiza o transplante de dois nodos, atualizando as suas hierarquias */
+void transplant(struct tNode *node, struct tNode *new) {
+
+    if (node->parent) {
+        if (node->parent->left == node)
+            node->parent->left = new;
+        else
+            node->parent->right = new;
+        if (new)
+            new->parent = node->parent;
+    } 
+}
+
 /* remove um nodo da arvore avl e realiza o balancemanto, se necessario */
 struct tNode *node_remove(struct tNode* node, int key) {
 
@@ -168,27 +181,23 @@ struct tNode *node_remove(struct tNode* node, int key) {
         return NULL;
 
     if (node->key == key) {
-        if (!node->left && !node->right) {          /* caso nao tenha filhos */
+        if (!node->left) { /* remove nodo com no maximo um filho */
+            struct tNode *temp = node->left ? node->left : node->right;
+            transplant(node, temp);
             free(node);
-            return NULL;
-       } else if (!node->left || !node->right) {    /* caso tenha 1 filho */
-            struct tNode* temp = node->left ? node->left : node->right;
-            *node = *temp;
-            free(temp);
-        } else {                                    /* caso tenha 2 filhos */
-            struct tNode* anteccessor = max_node(node->left);
+            return temp;
+        } else {    /* remove nodo com dois filhos usando o antecessor */
+            struct tNode *anteccessor = max_node(node->left);
             node->key = anteccessor->key;
             node->left = node_remove(node->left, anteccessor->key);
+            return node;
         }
-    } else { /* busca binaria do nodo */
-        if (key < node->key)
-            node->left = node_remove(node->left, key);
-        else
-            node->right = node_remove(node->right, key);
     }
-
-    if (!node)
-        return NULL;
+    /* busca binaria do nodo */
+    if (key < node->key)
+        node->left = node_remove(node->left, key);
+    else
+        node->right = node_remove(node->right, key);
 
     node->height = height(node);
     node = tree_balance(node);

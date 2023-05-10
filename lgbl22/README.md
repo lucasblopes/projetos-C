@@ -85,19 +85,15 @@ Para incluir um nodo a função node_insert(args..) realiza uma busca binária p
 
 - Exclusão: 
 
-O programa realiza a exclusão de um nodo pela função node_remove(args..) que, assim como na inclusão, realiza uma busca binária recursiva até encontrar o nodo a ser excluído. Após essa etapa, o programa utiliza três estratégias de remoção, de acordo com o número de filhos do nodo:
+O programa realiza a exclusão de um nodo pela função node_remove(args..) que, assim como na inclusão, realiza uma busca binária recursiva até encontrar o nodo a ser excluído. Após essa etapa, o programa utiliza duas estratégias de remoção, de acordo com o número de filhos do nodo:
 
-1- Nodo possui 0 filhos:
+1- Nodo possui no máximo 1 filho:
     
-Nesse caso, o nodo será nulificado e sua memória será liberada (free).
+Nesse caso, o programa chamará a função transplant(args..) que irá trocar o nodo com o seu filho (se existir), atualizando as suas hierarquias pai-filho. Depois disso, irá liberar memória do nodo e retornar o filho (ou NULL, caso não tenha).
 
-2- Nodo possui 1 filho:
+2 - Nodo possui 2 filhos:
 
-Nesse caso, o nodo será substituido pelo seu filho e sua memória será liberada.
-
-3 - Nodo possui 2 filhos:
-
-Aqui, o nodo receberá a chave do seu antecessor e irá remover o antecessor chamando a função node_remove(args..) novamente. Note que essa chamada cairá no caso 1 ou 2, pois o antecessor possui no máximo 1 filho.
+Aqui, o nodo receberá a chave do seu antecessor e irá remover o antecessor chamando a função node_remove(args..) novamente. Note que essa chamada cairá no caso 1, pois o antecessor possui no máximo 1 filho.
 Após a exclusão do nodo, assim como na inclusão, o programa atualiza a altura e balanceia a árvore, se necessário.
 
 - Algoritmo de Balanceamento:
