@@ -1,7 +1,7 @@
-TARGET  = myavl
+TARGET  = myrb
 
-SRCDIRS = ./source
-INCDIRS = ./include/
+SRCDIRS = .
+INCDIRS = 
 
 CC		= gcc
 CFILES		= $(foreach D, $(SRCDIRS), $(wildcard $(D)/*.c))

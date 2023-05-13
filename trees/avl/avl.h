@@ -1,5 +1,5 @@
-#ifndef TREE_H
-#define TREE_H
+#ifndef AVL_H
+#define AVL_H
 
 /* struct de um nodo de uma arvore avl */
 struct tNode {

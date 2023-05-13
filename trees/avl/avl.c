@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "tree.h"
+#include "avl.h"
 
 /* aloca memoria para um novo nodo */
 struct tNode *new_node(int key) {
@@ -149,8 +149,8 @@ struct tNode *node_insert(struct tNode *node, int key) {
     if (key < node->key) {
         node->left = node_insert(node->left, key);
         node->left->parent = node; 
-    }
-    else {
+    } else 
+    if (key > node->key) { /* evita repeticao de nodo */
         node->right = node_insert(node->right, key);
         node->right->parent = node;
     }
@@ -161,19 +161,6 @@ struct tNode *node_insert(struct tNode *node, int key) {
     return node; 
 }
 
-/* realiza o transplante de dois nodos, atualizando as suas hierarquias */
-void transplant(struct tNode *node, struct tNode *new) {
-
-    if (node->parent) {
-        if (node->parent->left == node)
-            node->parent->left = new;
-        else
-            node->parent->right = new;
-        if (new)
-            new->parent = node->parent;
-    } 
-}
-
 /* remove um nodo da arvore avl e realiza o balancemanto, se necessario */
 struct tNode *node_remove(struct tNode* node, int key) {
 
@@ -181,26 +168,52 @@ struct tNode *node_remove(struct tNode* node, int key) {
         return NULL;
 
     if (node->key == key) {
-        if (!node->left) { /* remove nodo com no maximo um filho */
-            struct tNode *temp = node->left ? node->left : node->right;
-            transplant(node, temp);
+        if (!node->left && !node->right) {          /* caso nao tenha filhos */
             free(node);
-            return temp;
-        } else {    /* remove nodo com dois filhos usando o antecessor */
-            struct tNode *anteccessor = max_node(node->left);
+            return NULL;
+       } else if (!node->left || !node->right) {    /* caso tenha 1 filho */
+            struct tNode* temp = node->left ? node->left : node->right;
+            *node = *temp;
+            free(temp);
+        } else {                                    /* caso tenha 2 filhos */
+            struct tNode* anteccessor = max_node(node->left);
             node->key = anteccessor->key;
             node->left = node_remove(node->left, anteccessor->key);
-            return node;
         }
+    } else { /* busca binaria do nodo */
+        if (key < node->key)
+            node->left = node_remove(node->left, key);
+        else
+            node->right = node_remove(node->right, key);
     }
-    /* busca binaria do nodo */
-    if (key < node->key)
-        node->left = node_remove(node->left, key);
-    else
-        node->right = node_remove(node->right, key);
+
+    if (!node)
+        return NULL;
 
     node->height = height(node);
     node = tree_balance(node);
 
     return node;
+}
+
+int main() {
+
+    struct tNode *root = NULL;
+    char op;
+    int key;
+
+    while (scanf("%c %d", &op, &key) == 2) {
+
+        if (op == 'i')
+            root = node_insert(root, key);
+        else 
+        if (op == 'r')
+            root = node_remove(root, key);
+        getchar(); /* '/n' */
+    }
+    
+    inorder_print(root, 0);    
+    free_tree(root);
+
+    return 0;
 }
