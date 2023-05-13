@@ -98,75 +98,39 @@ struct Node *tree_search(struct Node *node, int key) {
         return tree_search(node->right, key);
 }
 
-struct Node *left_rotate(struct Node *p) {
+void bst_insert(struct Node **root, int key) {
 
-    struct Node* q = p->right;
+    struct Node *new = new_node(key);
+    struct Node *parent = NULL;
+    struct Node *temp = *root;
 
-    p->right = q->left;
-    q->parent = p->parent;
-    p->parent = q;
-
-    if (q->left)
-        q->left->parent = p;
-
-    q->left = p;
-
-    return q;
-}
-
-struct Node *right_rotate(struct Node *p) {
-
-    struct Node *q = p->left;
-
-    p->left = q->right;
-    q->parent = p->parent;
-    p->parent = q;
-
-    if (q->right)
-        q->right->parent = p;
-
-    q->right = p;
-
-    return q;
-}
-
-struct Node *root_insert(struct Node *node, int key) {
-
-    if (!node)
-        return new_node(key);
-    if (key < node->key){
-        node->left = root_insert(node->left, key);
-        node->left->parent = node;
-        node = right_rotate(node);
-    }
-    else {
-        node->right = root_insert(node->right, key);
-        node->right->parent = node;
-        node = left_rotate(node);
-    }
-    return node;
-}
-
-struct Node *bst_insert(struct Node *node, int key) {
-
-    if (!node)
-        return new_node(key);
-    if (key < node->key) {
-        node->left = bst_insert(node->left, key);
-        node->left->parent = node;
-    }
-    else {
-        node->right = bst_insert(node->right, key);
-        node->right->parent = node;
+    while (temp != NULL) {
+        parent = temp;
+        if (key < temp->key)
+            temp = temp->left;
+        else if (key > temp->key)
+            temp = temp->right;
+        else {
+            return; /* nao tem duplicacoes */
+        }
     }
 
-    return node;
+    new->parent = parent;
+
+    if (parent == NULL) {
+        *root = new;
+    } else if (key < parent->key) {
+        parent->left = new;
+    } else {
+        parent->right = new;
+    }
+
 }
 
-struct Node *transplant(struct Node *root, struct Node *node, struct Node *new) {
+void transplant(struct Node **root, struct Node *node, struct Node *new) {
 
     if (!node->parent)
-        return new; /* root = new */
+        *root = new;
     else if (node == node->parent->left)
         node->parent->left = new;
     else 
@@ -174,36 +138,34 @@ struct Node *transplant(struct Node *root, struct Node *node, struct Node *new) 
     if (new)
         new->parent = node->parent;
 
-    return root;
 }
  
-struct Node *bst_remove(struct Node* root, int key) {
+void bst_remove(struct Node **root, int key) {
 
-    struct Node *node = tree_search(root, key);
+    struct Node *node = tree_search(*root, key);
     if (!node)
-        return root;
+        return;
 
     if (node->left == NULL) {
-        root = transplant(root, node, node->right);
+        transplant(&(*root), node, node->right);
     } else {
         if (node->right == NULL) {
-            root = transplant(root, node, node->left);
+            transplant(&(*root), node, node->left);
         }
         else {
             struct Node *s = tree_minimum(node->right); /* sucessor */
             if (s->parent != node) { 
-                root = transplant(root, s, s->right);
+                transplant(&(*root), s, s->right);
                 s->right = node->right;
                 s->right->parent = s;
             }
-            root = transplant(root, node, s);
+            transplant(&(*root), node, s);
             s->left = node->left;
             s->left->parent = s;
         }
     }
     free(node);
 
-    return root;
 }
 
 int main() {
@@ -215,10 +177,10 @@ int main() {
     while (scanf("%c %d", &op, &key) == 2) {
 
         if (op == 'i')
-            root = bst_insert(root, key);
+            bst_insert(&root, key);
         else 
         if (op == 'r')
-            root = bst_remove(root, key);
+            bst_remove(&root, key);
         getchar(); /* '/n' */
     }
 

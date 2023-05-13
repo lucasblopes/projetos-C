@@ -71,7 +71,7 @@ struct Node *tree_minimum(struct Node *node) {
 }
 
 /* rotacao esquerda de uma sub-arvore */
-struct Node* left_rotate(struct Node* root, struct Node* node) {
+void left_rotate(struct Node **root, struct Node *node) {
 
     struct Node* right_child = node->right;
     node->right = right_child->left;
@@ -83,7 +83,7 @@ struct Node* left_rotate(struct Node* root, struct Node* node) {
     right_child->parent = node->parent;
 
     if (node->parent == NULL) {
-        root = right_child;
+        *root = right_child;
     } else if (node == node->parent->left) {
         node->parent->left = right_child;
     } else {
@@ -93,11 +93,10 @@ struct Node* left_rotate(struct Node* root, struct Node* node) {
     right_child->left = node;
     node->parent = right_child;
 
-    return root;
 }
 
 /* rotacao direita de uma sub-arvore */
-struct Node* right_rotate(struct Node* root, struct Node* node) {
+void right_rotate(struct Node **root, struct Node *node) {
 
     struct Node* left_child = node->left;
     node->left = left_child->right;
@@ -109,7 +108,7 @@ struct Node* right_rotate(struct Node* root, struct Node* node) {
     left_child->parent = node->parent;
 
     if (node->parent == NULL) {
-        root = left_child;
+        *root = left_child;
     } else if (node == node->parent->left) {
         node->parent->left = left_child;
     } else {
@@ -119,11 +118,10 @@ struct Node* right_rotate(struct Node* root, struct Node* node) {
     left_child->right = node;
     node->parent = left_child;
 
-    return root;
 }
 
 /* corrige a arvore para respeitar as propriedades da rb */
-struct Node *rb_insert_fixup(struct Node *root, struct Node *node) {
+void rb_insert_fixup(struct Node **root, struct Node *node) {
 
     while (node->parent != NULL && node->parent->color == 'r') {
         struct Node *parent = node->parent;
@@ -142,7 +140,7 @@ struct Node *rb_insert_fixup(struct Node *root, struct Node *node) {
                 /* caso 2: O tio eh preto (ou inexistente) */ 
                 if (node == parent->right) {
                     node = parent;
-                    root = left_rotate(root, node);  
+                    left_rotate(root, node);  
                     parent = node->parent;
                     grandparent = parent->parent;
                 }
@@ -150,7 +148,7 @@ struct Node *rb_insert_fixup(struct Node *root, struct Node *node) {
                 /* caso 3: O pai eh vermelho */
                 parent->color = 'b';
                 grandparent->color = 'r';
-                root = right_rotate(root, grandparent);  
+                right_rotate(root, grandparent);  
             }
         } else {
             struct Node *uncle = grandparent->left;
@@ -165,7 +163,7 @@ struct Node *rb_insert_fixup(struct Node *root, struct Node *node) {
                 /* caso 2: O tio eh preto (ou inexistente) */
                 if (node == parent->left) {
                     node = parent;
-                    root = right_rotate(root, node);  
+                    right_rotate(root, node);  
                     parent = node->parent;
                     grandparent = parent->parent;
                 }
@@ -173,21 +171,20 @@ struct Node *rb_insert_fixup(struct Node *root, struct Node *node) {
                 /* caso 3: O pai eh vermelho */
                 parent->color = 'b';
                 grandparent->color = 'r';
-                root = left_rotate(root, grandparent);  
+                left_rotate(root, grandparent);  
             }
         }
     }
 
-    root->color = 'b'; /* raiz sempre preta */
-    return root;
+    (*root)->color = 'b'; /* raiz sempre preta */
 }
 
 /* realiza a inclusao que nem a bst e corrige se preciso */
-struct Node *rb_insert(struct Node *root, int key) {
+void rb_insert(struct Node **root, int key) {
 
     struct Node *new = new_node(key);
     struct Node *parent = NULL;
-    struct Node *temp = root;
+    struct Node *temp = *root;
 
     while (temp != NULL) {
         parent = temp;
@@ -196,61 +193,128 @@ struct Node *rb_insert(struct Node *root, int key) {
         else if (key > temp->key)
             temp = temp->right;
         else {
-            return root;
+            return;
         }
     }
 
     new->parent = parent;
 
     if (parent == NULL) {
-        root = new;
+        *root = new;
     } else if (key < parent->key) {
         parent->left = new;
     } else {
         parent->right = new;
     }
 
-    root = rb_insert_fixup(root, new);
+    rb_insert_fixup(&(*root), new);
 
-    return root;
 }
 
-void transplant(struct Node *node, struct Node *new) {
+void transplant(struct Node **root, struct Node *node, struct Node *new) {
 
-    if (node->parent) {
-        if (node->parent->left == node)
-            node->parent->left = new;
-        else
-            node->parent->right = new;
-        if (new)
-            new->parent = node->parent;
+    if (!node->parent)
+        *root = new;
+    else if (node == node->parent->left)
+        node->parent->left = new;
+    else 
+        node->parent->right = new;
+    if (new)
+        new->parent = node->parent;
+
+}
+
+void rb_delete_fixup(struct Node **root, struct Node *x) {
+
+    while (x && *root && x->color == 'b') {
+        if (x == x->parent->left) {
+            struct Node *w = x->parent->right;
+            if (w->color == 'r') {
+                w->color = 'b';                         /* caso 1 */
+                x->parent->color = 'r';                 /* caso 1 */
+                left_rotate(root, x->parent);           /* caso 1 */
+                w = x->parent->right;                   /* caso 1 */
+            }
+            if (w->left->color == 'b' && w->right->color == 'b') {
+                w->color = 'r';                          /* caso 2 */
+                x = x->parent;                           /* caso 2 */
+            } else if (w->right->color == 'b') {
+                    w->left->color = 'b';                /* caso 3 */
+                    w->color = 'r';                      /* caso 3 */
+                    right_rotate(root, w);               /* caso 3 */
+                    w = x->parent->right;                /* caso 3 */
+            }
+            w->color = x->parent->color;                 /* caso 4 */
+            x->parent->color = 'b';                      /* caso 4 */
+            w->right->color = 'b';                       /* caso 4 */
+            left_rotate(root, x->parent);                /* caso 4 */
+            x = *root;                                   /* caso 4 */
+        } else {
+            struct Node *w = x->parent->left;
+            if (w->color == 'r') {
+                w->color = 'b';                          /* caso 1 */
+                x->parent->color = 'r';                  /* caso 1 */
+                right_rotate(root, x->parent);           /* caso 1 */
+                w = x->parent->left;                     /* caso 1 */
+            }
+            if (w->right->color == 'b' && w->left->color == 'b') {
+                w->color = 'r';                          /* caso 2 */
+                x = x->parent;                           /* caso 2 */
+            } else if (w->left->color == 'b') {
+                    w->right->color = 'b';               /* caso 3 */
+                    w->color = 'r';                      /* caso 3 */
+                    left_rotate(root, w);                /* caso 3 */
+                    w = x->parent->left;                 /* caso 3 */
+            }
+            w->color = x->parent->color;                 /* caso 4 */
+            x->parent->color = 'b';                      /* caso 4 */
+            w->left->color = 'b';                        /* caso 4 */
+            right_rotate(root, x->parent);               /* caso 4 */
+            x = *root;                                   /* caso 4 */
+        }
     }
+    if (x)
+        x->color = 'b';
 }
- 
-struct Node *rb_remove(struct Node* root, int key) {
 
-    struct Node *node = tree_search(root, key);
+void rb_remove(struct Node **root, int key) {
+
+    struct Node *node = tree_search(*root, key);
     if (!node)
-        return root;
+        return;
+
+    char original_color = node->color;
+    struct Node *x; /* irmao de node */
 
     if (node->left == NULL) {
-        transplant(node, node->right);
+        x = node->right;
+        transplant(root, node, node->right);
     } else {
         if (node->right == NULL) {
-            transplant(node, node->left);
+            x = node->left;
+            transplant(root, node, node->left);
         }
         else {
-            struct Node *s = tree_minimum(node->right); /* sucessor */
-            node->key = s->key;
-            root = rb_remove(node->right, s->key);
+            struct Node *y = tree_minimum(node->right); /* sucessor */
+            original_color = y->color;
+            x = y->right;
+            if (y->parent == node)
+                x->parent = y;
+            else { 
+                transplant(root, y, y->right);
+                y->right = node->right;
+                y->right->parent = y;
+            }
+            transplant(root, node, y);
+            y->left = node->left;
+            y->left->parent = y;
+            y->color = node->color;
         }
     }
     free(node);
-
-    return root;
+    if (x && original_color == 'b')
+        rb_delete_fixup(root, x);
 }
-
-
 
 int main() {
 
@@ -261,10 +325,10 @@ int main() {
     while (scanf("%c %d", &op, &key) == 2) {
 
         if (op == 'i') 
-            root = rb_insert(root, key);
+            rb_insert(&root, key);
         else 
         if (op == 'r')
-            root = rb_remove(root, key);
+            rb_remove(&root, key);
         getchar(); /* '/n' */
     }
     
