@@ -1,0 +1,55 @@
+/* funcao auxiliar para verificar se eh rb */
+int is_rb_util(struct Node* root, int blackCount, int* isValid) {
+
+    if (root == NULL) {
+        return 1;
+    }
+
+    if (root->color == 'b') {
+        blackCount++;  
+    }
+
+    /* verifica se tem 2 nodos vermelhos consecutivos */
+    if (root->color == 'r' && (root->left && root->left->color == 'r') &&
+        (root->right && root->right->color == 'r')) {
+        *isValid = 0;
+        return 0;
+    }
+
+    /* verifica se todos os caminhos da raiz ate a folha tem o mesmo numero de nos pretos */
+    if (root->left && root->right) {
+        if (!is_rb_util(root->left, blackCount, isValid) ||
+            !is_rb_util(root->right, blackCount, isValid)) {
+            return 0;
+        }
+    } else if (root->left) {
+        if (!is_rb_util(root->left, blackCount, isValid)) {
+            return 0;
+        }
+    } else if (root->right) {
+        if (!is_rb_util(root->right, blackCount, isValid)) {
+            return 0;
+        }
+    } else {
+        /* O nó é uma folha, verifica se o caminho tem a contagem correta de nós pretos */
+        if (blackCount == -1) {
+            blackCount = 0; /* Define a contagem de nós pretos inicialmente */
+        } else {
+            if (blackCount != 0) {
+                *isValid = 0;
+                return 0;
+            }
+        }
+    }
+
+    return 1;
+}
+
+/* retorna 1 se a arvore for rb */
+int is_rb(struct Node* root) {
+
+    int isValid = 1;
+    int blackCount = -1;
+    is_rb_util(root, blackCount, &isValid);
+    return isValid;
+}
